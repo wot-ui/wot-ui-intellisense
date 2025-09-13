@@ -17,7 +17,7 @@
   "icon": "public/logo.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Xiabaiyou/wot-ui-intellisense.git"
+    "url": "https://github.com/wot-ui/wot-ui-intellisense.git"
   },
   "contributes": {
     "commands": [
