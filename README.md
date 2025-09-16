@@ -112,8 +112,7 @@
 
 ## 📞 支持
 
-- 如果你遇到问题，请提交 [Issue](https://github.com/Xiabaiyou/wot-ui-intellisense/issues)
-- 如果你想贡献代码，请查看 [贡献指南](./.github/CONTRIBUTING.md)
+- 如果你遇到问题，请提交 [Issue](https://github.com/wot-ui/wot-ui-intellisense/issues)
 
 ## 📄 许可证
 

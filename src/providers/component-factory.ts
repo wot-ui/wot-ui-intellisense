@@ -29,7 +29,6 @@ export class UnifiedComponentCompletionProvider
       try {
         const componentName = tag.replace("wd-", "");
         const componentMeta = loadComponentSchema(componentName, docSource);
-        console.log(componentMeta);
         this.componentMap.set(tag, componentMeta);
         this.componentMap.set(componentName, componentMeta); // 同时支持驼峰式
       } catch (error) {
@@ -85,6 +84,7 @@ export class UnifiedComponentCompletionProvider
         item.documentation = new vscode.MarkdownString(
           componentMeta.documentation
         );
+        item.documentation.isTrusted = true;
         item.insertText = new vscode.SnippetString(
           `${tagName}$0></${tagName}>`
         );
@@ -126,7 +126,10 @@ export class UnifiedComponentCompletionProvider
         kebabName,
         vscode.CompletionItemKind.Property
       );
-      kebabItem.documentation = prop.description;
+      // 组件名 属性名 属性类型 属性描述 文档在线链接
+      let mdContent = this.generateDocumentation(componentMeta, prop);
+      kebabItem.documentation = new vscode.MarkdownString(mdContent);
+      kebabItem.documentation.isTrusted = true;
       if (prop.type === "enum") {
         kebabItem.insertText = new vscode.SnippetString(
           `${kebabName}="\${1|${prop.values!.join(",")}|}"`
@@ -154,12 +157,15 @@ export class UnifiedComponentCompletionProvider
 
     // 事件补全
     componentMeta.events?.forEach((event: any) => {
+      let mdContent = this.generateDocumentation(componentMeta, event);
+
       // @事件
       const eventItem = new vscode.CompletionItem(
         `@${event.name}`,
         vscode.CompletionItemKind.Event
       );
-      eventItem.documentation = event.description;
+      eventItem.documentation = new vscode.MarkdownString(mdContent);
+      eventItem.documentation.isTrusted = true;
       eventItem.insertText = new vscode.SnippetString(`@${event.name}="$1"`);
       items.push(eventItem);
 
@@ -171,7 +177,8 @@ export class UnifiedComponentCompletionProvider
         `@${kebabEventName}`,
         vscode.CompletionItemKind.Event
       );
-      kebabEventItem.documentation = event.description;
+      kebabEventItem.documentation = new vscode.MarkdownString(mdContent);
+      kebabEventItem.documentation.isTrusted = true;
       kebabEventItem.insertText = new vscode.SnippetString(
         `@${kebabEventName}="$1"`
       );
@@ -198,7 +205,9 @@ export class UnifiedComponentCompletionProvider
         `${kebabClassName}`,
         vscode.CompletionItemKind.Property
       );
-      kebabClassItem.documentation = externalClass.description;
+      let mdContent = this.generateDocumentation(componentMeta, externalClass);
+      kebabClassItem.documentation = new vscode.MarkdownString(mdContent);
+      kebabClassItem.documentation.isTrusted = true;
       kebabClassItem.insertText = new vscode.SnippetString(
         `${kebabClassName}="$1"`
       );
@@ -208,7 +217,11 @@ export class UnifiedComponentCompletionProvider
       };
       kebabClassItem.sortText = "0";
       kebabClassItem.preselect = true;
-      kebabClassItem.kind = vscode.CompletionItemKind.Property;
+      kebabClassItem.kind = vscode.CompletionItemKind.Snippet;
+      kebabClassItem.command = {
+        command: "editor.action.triggerSuggest",
+        title: "",
+      };
       items.push(kebabClassItem);
     });
 
@@ -307,5 +320,24 @@ export class UnifiedComponentCompletionProvider
     }
 
     return false;
+  }
+  /**
+   * @param componentMeta 组件元数据
+   * @param item 属性元数据
+   * @returns 属性文档
+   */
+  private generateDocumentation(componentMeta: any, item: any): string {
+    const comLinkName =
+      COMPONENT_MAP.find((item) => item.tag === componentMeta.name)
+        ?.docSource || componentMeta.name.replace("wd-", "");
+    const link = `https://wot-ui.cn/component/${comLinkName}.html`;
+
+    return [
+    `**Wot Uni _${componentMeta.name}_**\n\n`,
+    `🏷️ 类型: ${item.type || "string"}\n\n`,
+    `📝 描述: ${item.description || "-"}\n\n`,
+    `📌 版本: ${item.version || "-"}\n\n`,
+    `🔗 [查看文档](${link})`,
+  ].join("");
   }
 }
