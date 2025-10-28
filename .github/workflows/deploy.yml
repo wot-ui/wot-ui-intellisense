@@ -22,12 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build extension (if needed)
-        run: |
-          if [ -f "package.json" ] && grep -q '"build"' package.json; then
-            npm run build
-          fi
-
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v2
         id: publishToOpenVSX
