@@ -10,13 +10,78 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension (if needed)
+        run: |
+          if [ -f "package.json" ] && grep -q '"build"' package.json; then
+            npm run build
+          fi
+
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v2
+        id: publishToOpenVSX
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          skipDuplicate: true
+          dependencies: true
+        continue-on-error: true
+
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v2
+        id: publishToVSMarketplace
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
+          skipDuplicate: true
+        continue-on-error: true
+
+      - name: Check deployment results
+        run: |
+          echo "OpenVSX deployment: ${{ steps.publishToOpenVSX.outcome }}"
+          echo "VS Marketplace deployment: ${{ steps.publishToVSMarketplace.outcome }}"
+          
+          if [[ "${{ steps.publishToOpenVSX.outputs.vsixPath }}" != "" ]]; then
+            echo "VSIX file created: ${{ steps.publishToOpenVSX.outputs.vsixPath }}"
+          fi
+          
+          if [[ "${{ steps.publishToOpenVSX.outcome }}" == "failure" && "${{ steps.publishToVSMarketplace.outcome }}" == "failure" ]]; then
+            echo "❌ Both deployments failed!"
+            exit 1
+          elif [[ "${{ steps.publishToOpenVSX.outcome }}" == "failure" ]]; then
+            echo "⚠️ OpenVSX deployment failed, but VS Marketplace succeeded"
+          elif [[ "${{ steps.publishToVSMarketplace.outcome }}" == "failure" ]]; then
+            echo "⚠️ VS Marketplace deployment failed, but OpenVSX succeeded"
+          else
+            echo "✅ Both deployments succeeded!"
+          fi
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          echo "## 🚀 Extension Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Registry | Status | Details |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🌐 Open VSX Registry | ${{ steps.publishToOpenVSX.outcome == 'success' && '✅ Success' || '❌ Failed' }} | ${{ steps.publishToOpenVSX.outcome == 'success' && 'Published successfully' || 'Check logs for details' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏪 Visual Studio Marketplace | ${{ steps.publishToVSMarketplace.outcome == 'success' && '✅ Success' || '❌ Failed' }} | ${{ steps.publishToVSMarketplace.outcome == 'success' && 'Published successfully' || 'Check logs for details' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ steps.publishToOpenVSX.outputs.vsixPath }}" != "" ]]; then
+            echo "📦 **VSIX File**: \`${{ steps.publishToOpenVSX.outputs.vsixPath }}\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Configuration Used" >> $GITHUB_STEP_SUMMARY
+          echo "- **Skip Duplicate**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dependencies Check**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "- **Shared VSIX**: ✅ Same file used for both registries" >> $GITHUB_STEP_SUMMARY
