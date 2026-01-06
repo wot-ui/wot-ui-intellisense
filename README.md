@@ -3,10 +3,6 @@
 </p>
 <h1 align="center">Wot UI IntelliSense</h1>
 
-<div align="center">
-<p>简体中文</p>
-</div>
-
 <p align="center">🚀 一个为 Wot UI 组件库提供智能提示的 VS Code 插件</p>
 
 ## ✨ 特性
@@ -22,7 +18,7 @@
 ## 📦 安装
 
 ### 方法一：VS Code 扩展市场安装（推荐）
-1. 在 VS Code 扩展市场中搜索 `wot-ui-intellisense`
+1. 在 VS Code 扩展市场中搜索 `wot-ui intellisense`
 2. 点击安装
 
 ### 方法二：离线安装
