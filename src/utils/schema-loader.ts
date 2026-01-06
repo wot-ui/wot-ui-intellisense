@@ -1,4 +1,5 @@
 import { parseComponentMarkdown, loadComponentDoc } from './markdown-parser';
+import { parseComponentMarkdownWithOnlineFallback, loadComponentDocWithOnlineFallback } from './markdown-parser';
 
 export interface ComponentMeta {
   name: string;
@@ -112,5 +113,63 @@ export function loadComponentSchema(componentName: string, docSource?: string): 
  * @returns 组件元数据的Promise
  */
 export async function loadComponentSchemaAsync(componentName: string, docSource?: string): Promise<ComponentMeta> {
-  return loadComponentSchema(componentName, docSource);
+  try {
+    // 解析组件文档，传递文档来源参数
+    const componentInfo = await parseComponentMarkdownWithOnlineFallback(componentName, docSource);
+    // 如果解析成功，则使用解析结果；否则使用默认值
+    if (componentInfo) {
+      return {
+        name: componentInfo.name,
+        props: componentInfo.props.map(prop => ({
+          name: prop.name,
+          type: prop.type as 'enum' | 'boolean' | 'string' | 'number',
+          values: prop.values,
+          description: prop.description,
+          default: prop.default,
+          version: prop.version
+        })),
+        events: componentInfo.events.map(event => ({
+          name: event.name,
+          description: event.description,
+          version: event.version
+        })),
+        slots: componentInfo.slots?.map(slot => ({
+          name: slot.name,
+          description: slot.description,
+          version: slot.version
+        })),
+        externalClasses: componentInfo.externalClasses?.map(externalClass => ({
+          name: externalClass.name,
+          description: externalClass.description,
+          version: externalClass.version
+        })),
+        dataStructures: componentInfo.dataStructures?.map(structure => ({
+          name: structure.name,
+          fields: structure.fields.map(field => ({
+            name: field.name,
+            type: field.type,
+            description: field.description,
+            version: field.version
+          }))
+        })),
+        documentation: componentInfo.documentation
+      };
+    }
+    
+    // 默认值
+    return {
+      name: `wd-${componentName}`,
+      props: [],
+      events: [],
+      documentation: await loadComponentDocWithOnlineFallback(componentName, docSource) // 传递文档来源参数
+    };
+  } catch (error) {
+    console.error(`加载组件schema失败: ${componentName}`, error);
+    return {
+      name: `wd-${componentName}`,
+      props: [],
+      events: [],
+      documentation: ''
+    };
+  }
 }

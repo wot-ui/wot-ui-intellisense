@@ -289,6 +289,7 @@ const displayFormatTabLabel = (items) => {
 | loading | 加载中 | boolean | - | false | - |
 | loading-color | 加载的颜色，只能使用十六进制的色值写法，且不能使用缩写 | string | - | #4D80F0 | - |
 | columns-height | picker内部滚筒高 | number | - | 231 | - |
+| item-height | picker item的高度 | number | - | 35 | - |
 | title | 弹出层标题 | string | - | - | - |
 | cancel-button-text | 取消按钮文案 | string | - | 取消 | - |
 | confirm-button-text | 确认按钮文案 | string | - | 完成 | - |
@@ -307,7 +308,7 @@ const displayFormatTabLabel = (items) => {
 | minMinute | 最小分钟，time类型时生效 | number | - | 0 | - |
 | maxMinute | 最大分钟，time类型时生效 | number | - | 59 | - |
 | required | 表单属性，必填 | boolean | - | false | - |
-| marker-side | 必填标记位置 | string | before / after | before | $LOWEST_VERSION$ |
+| marker-side | 必填标记位置 | string | before / after | before | 1.12.0 |
 | size | 设置选择器大小 | string | large | - | - |
 | label-width | 设置左侧标题宽度 | string | - | 33% | - |
 | error | 是否为错误状态，错误状态时右侧内容为红色 | boolean | - | false | - |

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { ComponentMeta } from "../utils/schema-loader";
+import { ComponentMeta, loadComponentSchemaAsync } from "../utils/schema-loader";
 import { ComponentHoverProvider } from "./../utils/index";
 import { COMPONENT_MAP } from "../utils/component_map";
-import { loadComponentSchema } from "../utils/schema-loader";
+
 /**
  * 通用组件悬停提供者
  */
@@ -24,15 +24,19 @@ export class UnifiedComponentCompletionProvider
   private componentMap: Map<string, any> = new Map();
 
   constructor() {
-    // 初始化所有组件的元数据
+    // 初始化所有组件的元数据（异步加载）
+    this.initializeComponentMetadata();
+  }
+
+  private async initializeComponentMetadata() {
     for (const { tag, docSource } of COMPONENT_MAP) {
       try {
         const componentName = tag.replace("wd-", "");
-        const componentMeta = loadComponentSchema(componentName, docSource);
+        const componentMeta = await loadComponentSchemaAsync(componentName, docSource);
         this.componentMap.set(tag, componentMeta);
         this.componentMap.set(componentName, componentMeta); // 同时支持驼峰式
       } catch (error) {
-        console.error(`加载 ${tag}失败:`, error);
+        console.error(`[wot-ui-intellisense] Failed to load ${tag}:`, error);
       }
     }
   }

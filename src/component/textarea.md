@@ -154,13 +154,14 @@ const value = ref<string>('')
 | center                  | 有 label 时设置标题和输入框垂直居中（默认顶部居中）                                               | boolean           | -                                  | false     | -        |
 | no-border               | 非 cell 类型下是否隐藏下划线                                                                      | boolean           | -                                  | false     | -        |
 | required                | cell 类型下必填样式                                                                               | boolean           | -                                  | false     | -        |
-| marker-side             | 必填标记的位置                                                                                    | string            | before / after                     | before    | $LOWEST_VERSION$ |
+| marker-side             | 必填标记的位置                                                                                    | string            | before / after                     | before    | 1.12.0 |
 | prop                    | 表单域 `model` 字段名（表单校验必填）                                                             | string            | -                                  | -         | -        |
 | rules                   | 表单验证规则                                                                                      | FormItemRule[]    | -                                  | []        | -        |
 | clearTrigger            | 显示清除图标的时机：always（输入框非空时展示）/ focus（聚焦且非空时展示）                         | InputClearTrigger | `focus`/`always`                   | `always`  | 1.3.7    |
 | focusWhenClear          | 点击清除按钮时是否聚焦输入框                                                                      | boolean           | -                                  | true      | 1.3.7    |
 | ignoreCompositionEvent  | 是否忽略文本合成系统事件处理（为 false 时触发 composition 相关事件，且在合成期间触发 input 事件） | boolean           | -                                  | true      | 1.3.11   |
 | inputmode               | 输入数据类型提示                                                                                  | InputMode         | -                                  | text      | 1.5.0    |
+| enableNative  | 支付宝小程序使用，设置为false可以避免textarea弹出键盘后出现内容上移 | boolean           | -                                  | true      | 1.14.0   |
 
 ### InputMode 可选值
 

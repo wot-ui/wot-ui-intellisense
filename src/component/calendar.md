@@ -345,6 +345,43 @@ function handleConfirm({ value }) {
 
 设置 `first-day-of-week` 属性，默认为 0，即周日，设置为 1 则为周一，依此类推。
 
+## 拓展确定区域操作控件
+
+如果需要拓展确定区域操作控件，可以使用 `confirm-left` 和 `confirm-right` 插槽，分别对应确定按钮的左侧和右侧位置。
+
+```html
+<wd-calendar v-model="value">
+  <template #confirm-right>
+    <wd-button block plain custom-style="margin-left: 10px;" @click="selectToday">选择今天</wd-button>
+  </template>
+</wd-calendar>
+```
+
+```typescript
+import { ref, nextTick } from 'vue'
+
+const value = ref<number>(Date.now())
+
+const selectToday = () => {
+  value.value = Date.now()
+  nextTick(() => {
+    value.value = getToday(false)
+  })
+}
+
+const getToday = <R extends boolean = false>(range?: R): R extends true ? [number, number] : number => {
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)
+
+  if (!range) {
+    return now.getTime() as any
+  }
+  const end = new Date(now)
+  end.setHours(23, 59, 59, 999)
+  return [now.getTime(), end.getTime()] as any
+}
+```
+
 ## 自定义选择器
 
 如果默认的 cell 类型的展示格式不满足需求，可以通过默认插槽进行自定义选择器样式。
@@ -425,7 +462,7 @@ function handleConfirm({ value }) {
 | label-width | 设置左侧标题宽度 | string | - | 33% | - |
 | error | 是否为错误状态，错误状态时右侧内容为红色 | boolean | - | false | - |
 | required | 必填样式 | boolean | - | false | - |
-| marker-side | 必填标记位置 | string | before / after | before | $LOWEST_VERSION$ |
+| marker-side | 必填标记位置 | string | before / after | before | 1.12.0 |
 | center | 是否垂直居中 | boolean | - | false | - |
 | ellipsis | 是否超出隐藏 | boolean | - | false | - |
 | align-right | 选择器的值靠右展示 | boolean | - | false | - |
@@ -470,10 +507,12 @@ function handleConfirm({ value }) {
 
 ## Slots
 
-| name    | 说明       | 最低版本 |
-| ------- | ---------- | -------- |
-| default | 自定义展示 | -        |
-| label   | 左侧插槽   | -        |
+| name          | 说明       | 最低版本             |
+|---------------|----------|------------------|
+| default       | 自定义展示    | -                |
+| label         | 左侧插槽     | -                |
+| confirm-left  | 确定区域左侧插槽 | 1.14.0 |
+| confirm-right | 确定区域右侧插槽 | 1.14.0 |
 
 ## 外部样式类
 

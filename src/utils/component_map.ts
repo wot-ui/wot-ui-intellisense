@@ -103,7 +103,9 @@ export const COMPONENT_MAP: ComponentConfig[] = [
   { tag: "wd-upload" },
   { tag: "wd-notify"},
   { tag: "wd-watermark" },
-  { tag: "wd-guide" },
+  { tag: "wd-tour" },
+  { tag: "wd-avatar", docSource: "avatar" },
+  { tag: "wd-avatar-group" , docSource: "avatar" },
 ];
 
 // 默认触发字符

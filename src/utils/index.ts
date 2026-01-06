@@ -191,6 +191,7 @@ export abstract class ComponentHoverProvider implements vscode.HoverProvider {
           const markdown = new vscode.MarkdownString();
           markdown.isTrusted = true;
           markdown.supportHtml = true;
+          markdown.appendMarkdown(`### Wot UI IntelliSense \`${this.componentName}\` 组件\n\n`);
           markdown.appendMarkdown("### 外部样式类\n\n");
           markdown.appendMarkdown(
             `${externalClass.name} ${externalClass.description || ''}\n\n`
@@ -240,14 +241,14 @@ export abstract class ComponentHoverProvider implements vscode.HoverProvider {
           const markdown = new vscode.MarkdownString();
           markdown.isTrusted = true;
           markdown.supportHtml = true;
-
+          markdown.appendMarkdown(`### Wot UI IntelliSense \`${this.componentName}\` 组件\n\n`);
           markdown.appendMarkdown(
             `### ${attrInfo.isDynamic ? "动态事件" : "事件"} \`${
               event.name
             }\`\n\n`
           );
-          markdown.appendMarkdown(`${event.description}\n\n`);
-          markdown.appendMarkdown(`**类型**: 事件处理器\n\n`);
+          markdown.appendMarkdown(`**📝 描述**: ${event.description}\n\n`);
+          markdown.appendMarkdown(`**🏷️ 类型**: 事件处理器\n\n`);
 
           if (event.arguments) {
             markdown.appendMarkdown(`**事件参数**: \n`);
@@ -281,18 +282,18 @@ export abstract class ComponentHoverProvider implements vscode.HoverProvider {
           const markdown = new vscode.MarkdownString();
           markdown.isTrusted = true;
           markdown.supportHtml = true;
-
+          markdown.appendMarkdown(`### Wot UI IntelliSense \`${this.componentName}\` 组件\n\n`);
           markdown.appendMarkdown(
             `### ${attrInfo.isDynamic ? "动态属性" : "属性"} \`${
               prop.name
             }\`\n\n`
           );
-          markdown.appendMarkdown(`${prop.description}\n\n`);
-          markdown.appendMarkdown(`**类型**: ${prop.type}\n\n`);
+          markdown.appendMarkdown(`**📝 描述**: ${prop.description}\n\n`);
+          markdown.appendMarkdown(`**🏷️ 类型**: \`${prop.type}\`\n\n`);
 
           if (prop.values) {
             markdown.appendMarkdown(
-              `**可选值**: ${prop.values.join(", ")}\n\n`
+              `**可选值**: \`${prop.values.join(", ")}\`\n\n`
             );
           }
 
