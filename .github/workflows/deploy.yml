@@ -37,7 +37,7 @@ jobs:
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           skipDuplicate: true
-          dependencies: true
+          dependencies: false
         continue-on-error: true
 
       - name: Publish to Visual Studio Marketplace
@@ -48,6 +48,7 @@ jobs:
           registryUrl: https://marketplace.visualstudio.com
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           skipDuplicate: true
+          dependencies: false
         continue-on-error: true
 
       - name: Check deployment results
@@ -105,7 +106,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📋 Configuration Used" >> $GITHUB_STEP_SUMMARY
           echo "- **Skip Duplicate**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
-          echo "- **Dependencies Check**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dependencies Check**: ❌ Disabled (pnpm compatibility)" >> $GITHUB_STEP_SUMMARY
           echo "- **Shared VSIX**: ✅ Same file used for both registries" >> $GITHUB_STEP_SUMMARY
           echo "- **Release Notes**: ✅ Auto-generated" >> $GITHUB_STEP_SUMMARY
           echo "- **Changelog**: ✅ Generated via changelogithub" >> $GITHUB_STEP_SUMMARY
