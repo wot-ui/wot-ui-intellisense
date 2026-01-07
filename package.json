@@ -3,7 +3,7 @@
   "displayName": "wot-ui intellisense",
   "publisher": "wot-ui",
   "description": "一个为 Wot UI 组件库提供智能提示的 VS Code 插件，由 Wot UI 团队开发。",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.99.0"
   },

@@ -1,6 +1,13 @@
 # 更新日志 
 
 
+### [0.0.5](https://github.com/wot-ui/wot-ui-intellisense/compare/v0.0.4...v0.0.5) (2026-01-07)
+
+
+### ✏️ Documentation | 文档
+
+* ✏️  README 中添加下载地址与摸鱼 uni 插件库地址 ([4a0cb2f](https://github.com/wot-ui/wot-ui-intellisense/commit/4a0cb2f852b5128dac4e8e0062d30101b6880fe7))
+
 ### [0.0.4](https://github.com/wot-ui/wot-ui-intellisense/compare/v0.0.3...v0.0.4) (2026-01-07)
 
 ## 0.0.1
