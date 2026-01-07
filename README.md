@@ -3,7 +3,13 @@
 </p>
 <h1 align="center">Wot UI IntelliSense</h1>
 
-<p align="center">🚀 一个为 Wot UI 组件库提供智能提示的 VS Code 插件</p>
+<p align="center">🚀 一个为 Wot UI 组件库提供智能提示的 VS Code 插件，由 Wot UI 团队维护</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=wot-ui.wot-ui-intellisense">🏪 下载地址(vscode marketplace)</a>
+  <a href="https://open-vsx.org/extension/wot-ui/wot-ui-intellisense">🌐 下载地址(open-vsx)</a>
+  <a href="https://my-uni.wot-ui.cn/">📱 摸鱼插件库</a>
+</p>
 
 ## ✨ 特性
 
