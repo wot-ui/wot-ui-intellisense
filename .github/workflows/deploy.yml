@@ -6,21 +6,32 @@ on:
       - "*"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
+          run_install: false
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Publish to Open VSX Registry
         uses: HaaLeo/publish-vscode-extension@v2
@@ -61,10 +72,29 @@ jobs:
             echo "✅ Both deployments succeeded!"
           fi
 
+      - name: Create Release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate GitHub Changelog
+        if: success()
+        run: pnpx changelogithub
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create deployment summary
         if: always()
         run: |
           echo "## 🚀 Extension Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Release Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Status**: ✅ Created successfully" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Registry | Status | Details |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|--------|---------|" >> $GITHUB_STEP_SUMMARY
@@ -79,3 +109,5 @@ jobs:
           echo "- **Skip Duplicate**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
           echo "- **Dependencies Check**: ✅ Enabled" >> $GITHUB_STEP_SUMMARY
           echo "- **Shared VSIX**: ✅ Same file used for both registries" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Notes**: ✅ Auto-generated" >> $GITHUB_STEP_SUMMARY
+          echo "- **Changelog**: ✅ Generated via changelogithub" >> $GITHUB_STEP_SUMMARY
