@@ -56,6 +56,12 @@
     "grammars": [],
     "configuration": {}
   },
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "build": "vsce package --no-dependencies",

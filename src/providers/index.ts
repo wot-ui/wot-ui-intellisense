@@ -1,56 +1,40 @@
-// 静态导入所有组件
-
 import * as vscode from "vscode";
-import { COMPONENT_MAP } from "../utils/component_map";
-import { loadComponentSchemaAsync } from "../utils/schema-loader";
-import {
-  GenericComponentHoverProvider,
-  UnifiedComponentCompletionProvider,
-} from "../providers/component-factory";
+import { WotUIProvider } from "./wot-ui-provider";
 
+/**
+ * 注册 Wot UI 插件功能
+ * 统一注册补全和悬停提供者
+ */
 export async function registerAll(context: vscode.ExtensionContext) {
-
   try {
-    // 使用统一的组件补全提供者
-    const unifiedProvider = new UnifiedComponentCompletionProvider();
+    // 创建统一的 Wot UI 提供者
+    const wotUIProvider = new WotUIProvider(context);
     const selector: vscode.DocumentSelector = [
       { language: "vue", scheme: "file" },
       { language: "html", scheme: "file" },
     ];
 
+    // 注册补全提供者
     context.subscriptions.push(
       vscode.languages.registerCompletionItemProvider(
         selector,
-        unifiedProvider,
+        wotUIProvider,
         "<",
         "\n",
         "\t",
         " ",
         ":",
-        "@" // 触发字符
+        "@"
       )
     );
 
-    // 保留原有的悬停提供者（可以保持每个组件一个实例）
-    for (const { tag, docSource } of COMPONENT_MAP) {
-      try {
-        const componentName = tag.replace("wd-", "");
-        console.log(`[wot-ui-intellisense] Loading schema for ${tag}`);
-        const componentMeta = await loadComponentSchemaAsync(componentName, docSource);
-        const hover = new GenericComponentHoverProvider(tag, componentMeta);
-        const selector: vscode.DocumentSelector = [
-          { language: "vue", scheme: "file" },
-          { language: "html", scheme: "file" },
-        ];
+    // 注册悬停提供者
+    context.subscriptions.push(
+      vscode.languages.registerHoverProvider(selector, wotUIProvider)
+    );
 
-        context.subscriptions.push(
-          vscode.languages.registerHoverProvider(selector, hover)
-        );
-
-      } catch (error) {
-      }
-    }
+    console.log("✅ Wot UI 提供者注册完成");
   } catch (error) {
-    console.error("[wot-ui-intellisense] Failed to register unified completion provider:", error);
+    console.error("[wot-ui-intellisense] Failed to register Wot UI provider:", error);
   }
 }
