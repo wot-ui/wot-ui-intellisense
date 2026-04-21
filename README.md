@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="logo" src="https://v2.wot-ui.cn/logo.svg" width="200">
+    <img alt="logo" src="./public/logo.png" width="200">
 </p>
 <h1 align="center">Wot UI IntelliSense</h1>
 
@@ -12,7 +12,7 @@
 </p>
 
 ## ✨ 特性
-
+- 📦 智能提示，智能检测版本
 - 🎯 为 80+ 个 Wot UI 组件提供智能代码补全
 - 🚀 支持组件标签、属性、事件的智能提示
 - 💪 支持短横线式(kebab-case)命名方式
@@ -103,6 +103,12 @@
 - 鼠标悬停在属性上显示属性说明
 - 鼠标悬停在事件上显示事件说明
 
+## 🛠️ 注意
+
+- 该插件仅支持 Wot UI 组件库的智能提示，不支持其他组件库。
+- 该插件仅支持 Vue 和 HTML 文件文件类型。
+- 该插件兼容 Wot UI 组件库的v1 和 v2 版本。
+- 若该插件无法正常检测出组件库版本，建议先关闭项目，再重新打开，插件会自动检测并匹配对应版本。
 
 ## ⚙️ 配置
 
