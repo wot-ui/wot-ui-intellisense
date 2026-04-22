@@ -48,6 +48,8 @@ jobs:
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
+          retry: 3
+          retryDelayInSeconds: 10
           extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}
           skipDuplicate: true
           dependencies: false
