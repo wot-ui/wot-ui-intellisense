@@ -14,7 +14,7 @@ import { COMPONENT_MAP as V2_COMPONENT_MAP, packageVersion as v2PackageVersion }
 export class CacheInitializer {
   private cacheManager: ComponentCacheManager;
   private extensionPath: string;
-
+  
   constructor(context: vscode.ExtensionContext) {
     this.cacheManager = ComponentCacheManager.getInstance(context);
     this.extensionPath = context.extensionPath;
@@ -68,6 +68,7 @@ export class CacheInitializer {
    * 获取 MD 文件路径
    */
   private getMarkdownFilePath(componentName: string, version: string): string {
-    return path.join(this.extensionPath, 'src', 'component', version, `${componentName}.md`);
+    return path.join(this.extensionPath, 'component', version, `${componentName}.md`);
+    // return path.join(this.extensionPath, 'src', 'component', version, `${componentName}.md`);
   }
 }

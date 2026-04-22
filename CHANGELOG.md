@@ -1,7 +1,6 @@
 # 更新日志 
 
 
-### [0.0.7](https://github.com/wot-ui/wot-ui-intellisense/compare/v0.0.6...v0.0.7) (2026-04-22)
 
 ## 0.0.6
 
